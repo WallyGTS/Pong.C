@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define SOM_DE_FUNDO "sounds/Overworld Theme - Super Mario_ World(MP3_70K)"
+
+
+
 const int altura = 500;
 const int largura = 1080;
 
@@ -89,6 +93,7 @@ void atualizar_raquetes(raquete *Raquete_esquerda, raquete *Raquete_direita){
 
 int main(){
     InitWindow(largura, altura, "PONG");
+    InitAudioDevice();
     SetTargetFPS(60);
     int placar_esquerdo = 0;
     int placar_direito = 0;
@@ -100,8 +105,8 @@ int main(){
             .y = altura / 2,
         },
         .vel = {
-            .x = 18,
-            .y = 18,
+            .x = 15,
+            .y = 15,
         },
         .raio = 25,
         .cor = WHITE
@@ -135,18 +140,27 @@ int main(){
         .cor = WHITE,
     };
 
+    Sound somMusica = LoadSound(SOM_DE_FUNDO);
+
     while(!WindowShouldClose()){
-         if(IsKeyDown(KEY_Q))
+         if(IsKeyPressed(KEY_Q))
          pause = !pause;
          if(!pause){
         atualizar(&bolinha, &placar_esquerdo, &placar_direito);
         atualizar_raquetes(&Raquete_esquerda, &Raquete_direita);
         colisao(&bolinha, &Raquete_esquerda, &Raquete_direita);
+        if(!IsSoundPlaying(somMusica)){
+            PlaySound(somMusica);
+        } else {
+            if(IsSoundPlaying(somMusica)){
+                StopSound(somMusica);
+            }
+        }
          }
         BeginDrawing();
+        ClearBackground(BLACK);
         if(pause)
         DrawText("JOGO PAUSADO", 375, altura/2, 40, WHITE);
-            ClearBackground(BLACK);
             DrawLine(largura * 0.50, 0, largura * 0.50, altura,WHITE);
             desenhar(&bolinha);
             desenhar_raquete_esquerda(&Raquete_esquerda);
@@ -154,7 +168,7 @@ int main(){
             desenhar_placar(placar_esquerdo, placar_direito);
         EndDrawing();
     }
-
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }
