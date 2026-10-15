@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define SOM_DE_FUNDO "sounds/Overworld Theme - Super Mario_ World(MP3_70K).mp3"
-#define SOM_DA_BOLA "sounds/beachball_bounce01.wav"
 
+#define SOM_DA_BOLA "sounds/beachball_bounce01.wav"
 
 const int altura = 500;
 const int largura = 1080;
