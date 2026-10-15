@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define SOM_DE_FUNDO "sounds/Overworld Theme - Super Mario_ World(MP3_70K)"
-
+#define SOM_DE_FUNDO "sounds/Overworld Theme - Super Mario_ World(MP3_70K).mp3"
+#define SOM_DA_BOLA "sounds/beachball_bounce01.wav"
 
 
 const int altura = 500;
@@ -66,15 +66,26 @@ void desenhar_placar(int placar_esquerda, int placar_direita){
        DrawText(TextFormat("%d",placar_direita), 0.50 * largura +300 , 30, 50, WHITE);
        DrawLine(largura / 2, 0, largura / 2, altura, WHITE);
 }
+
+
 void colisao(Bolinha *bolinha, raquete *Raquete_esquerda, raquete *Raquete_direita){
     Rectangle recEsquerda = { Raquete_esquerda->pos.x, Raquete_esquerda->pos.y, Raquete_esquerda->largura, Raquete_esquerda->raltura };
     if (CheckCollisionCircleRec(bolinha->pos, bolinha->raio, recEsquerda)) {
-        if (bolinha->vel.x < 0) bolinha->vel.x *= -1; 
-    }
+         Sound somBola = LoadSound(SOM_DA_BOLA);
+        if (bolinha->vel.x < 0){
+
+         bolinha->vel.x *= -1;
+         PlaySound(somBola);
+      }
+    } 
 
     Rectangle recDireita = { Raquete_direita->pos.x, Raquete_direita->pos.y, Raquete_direita->largura, Raquete_direita->raltura };
     if (CheckCollisionCircleRec(bolinha->pos, bolinha->raio, recDireita)) {
-        if (bolinha->vel.x > 0) bolinha->vel.x *= -1; 
+        Sound somBola = LoadSound(SOM_DA_BOLA);
+        if (bolinha->vel.x > 0){
+        bolinha->vel.x *= -1;
+         PlaySound(somBola);
+        } 
     }
 }
 
@@ -140,24 +151,20 @@ int main(){
         .cor = WHITE,
     };
 
-    Sound somMusica = LoadSound(SOM_DE_FUNDO);
 
     while(!WindowShouldClose()){
-         if(IsKeyPressed(KEY_Q))
+         
+
+        if(IsKeyPressed(KEY_Q))
+
          pause = !pause;
          if(!pause){
         atualizar(&bolinha, &placar_esquerdo, &placar_direito);
         atualizar_raquetes(&Raquete_esquerda, &Raquete_direita);
         colisao(&bolinha, &Raquete_esquerda, &Raquete_direita);
-        if(!IsSoundPlaying(somMusica)){
-            PlaySound(somMusica);
-        } else {
-            if(IsSoundPlaying(somMusica)){
-                StopSound(somMusica);
-            }
-        }
          }
-        BeginDrawing();
+    
+         BeginDrawing();
         ClearBackground(BLACK);
         if(pause)
         DrawText("JOGO PAUSADO", 375, altura/2, 40, WHITE);
